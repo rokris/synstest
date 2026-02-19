@@ -76,13 +76,13 @@
 <div>
 <label>Linseverdi Høyre øye (Korreksjon): <span id="lensRightVal" class="pill mono"></span></label>
 <input id="lensRight" type="range" min="-8" max="8" step="0.25" value="0"/>
-<div class="help">Hvor mye styrke laseren/linsen korrigerer</div>
+<div class="help">Hvor mye styrke laseren/linsen korrigerer (beregnes automatisk for nærøye ved Monovision)</div>
 </div>
 
 <div>
 <label>Linseverdi Venstre øye (Korreksjon): <span id="lensLeftVal" class="pill mono"></span></label>
 <input id="lensLeft" type="range" min="-8" max="8" step="0.25" value="0"/>
-<div class="help">Hvor mye styrke laseren/linsen korrigerer</div>
+<div class="help">Hvor mye styrke laseren/linsen korrigerer (beregnes automatisk for nærøye ved Monovision)</div>
 </div>
 </div>
 
@@ -258,19 +258,14 @@ function update(){
 
   const RR0 = parseFloat(rRight.value);
   const RL0 = parseFloat(rLeft.value);
-  const lensR = parseFloat(lensRight.value);
-  const lensL = parseFloat(lensLeft.value);
+  let lensR = parseFloat(lensRight.value);
+  let lensL = parseFloat(lensLeft.value);
   const A = parseFloat(acc.value);
 
   rRightVal.textContent = fmt(RR0);
   rLeftVal.textContent = fmt(RL0);
-  lensRightVal.textContent = fmt(lensR);
-  lensLeftVal.textContent = fmt(lensL);
-  accVal.textContent = fmt(A);
 
-  let RR = RR0 - lensR;
-  let RL = RL0 - lensL;
-
+  let RR, RL;
   let dominant = "Høyre";
   let nearEye = "Venstre";
 
@@ -280,21 +275,59 @@ function update(){
     if(dominantEye.value==="R"){
       dominant="Høyre";
       nearEye="Venstre";
-      // RR beholder slider-verdien (RR0 - lensR)
-      RL = nearTarget;  // Nærøye låses til mål
+      
+      // Høyre (dominant) - bruker slider
+      RR = RR0 - lensR;
+      
+      // Venstre (nærøye) - beregn linseverdi automatisk
+      lensL = RL0 - nearTarget;
+      RL = nearTarget;
+      
+      // Deaktiver venstre linseslider, aktiver høyre
+      lensLeft.disabled = true;
+      lensRight.disabled = false;
+      lensLeft.style.opacity = "0.5";
+      lensRight.style.opacity = "1";
     }else{
       dominant="Venstre";
       nearEye="Høyre";
-      // RL beholder slider-verdien (RL0 - lensL)
-      RR = nearTarget;  // Nærøye låses til mål
+      
+      // Venstre (dominant) - bruker slider
+      RL = RL0 - lensL;
+      
+      // Høyre (nærøye) - beregn linseverdi automatisk
+      lensR = RR0 - nearTarget;
+      RR = nearTarget;
+      
+      // Deaktiver høyre linseslider, aktiver venstre
+      lensRight.disabled = true;
+      lensLeft.disabled = false;
+      lensRight.style.opacity = "0.5";
+      lensLeft.style.opacity = "1";
     }
 
     eyeSummary.textContent = `Dominant: ${dominant} (R=${fmt(dominantEye.value==="R"?RR:RL)}) · Nærøye: ${nearEye} (R=${fmt(nearTarget)})`;
-    dominantCalc.textContent = `Dominant øye kan justeres fritt. Nærøye låst til ${fmt(nearTarget)}.`;
+    dominantCalc.textContent = `Dominant øye kan justeres fritt. Nærøye beregnes automatisk til ${fmt(nearTarget)}.`;
   }else{
+    // Ingen monovision - bruk normal beregning og aktiver begge slidere
+    lensR = parseFloat(lensRight.value);
+    lensL = parseFloat(lensLeft.value);
+    RR = RR0 - lensR;
+    RL = RL0 - lensL;
+    
+    lensRight.disabled = false;
+    lensLeft.disabled = false;
+    lensRight.style.opacity = "1";
+    lensLeft.style.opacity = "1";
+    
     eyeSummary.textContent = `Ingen monovision`;
     dominantCalc.textContent = "";
   }
+
+  // Oppdater visning av linseverdier
+  lensRightVal.textContent = fmt(lensR);
+  lensLeftVal.textContent = fmt(lensL);
+  accVal.textContent = fmt(A);
 
   summary.textContent = "";
 
