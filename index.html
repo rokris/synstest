@@ -60,28 +60,28 @@
 
 <div class="two">
 <div>
-<label>Startverdi Høyre øye (R0): <span id="rRightVal" class="pill mono"></span></label>
-<input id="rRight" type="range" min="-6" max="6" step="0.25" value="0"/>
+<label>Startverdi Venstre øye (R0): <span id="rLeftVal" class="pill mono"></span></label>
+<input id="rLeft" type="range" min="-6" max="6" step="0.25" value="0"/>
 <div class="help">Øyets naturlige brille-styrke før korreksjon (+ = langsynthet, - = nærsynt)</div>
 </div>
 
 <div>
-<label>Startverdi Venstre øye (R0): <span id="rLeftVal" class="pill mono"></span></label>
-<input id="rLeft" type="range" min="-6" max="6" step="0.25" value="0"/>
+<label>Startverdi Høyre øye (R0): <span id="rRightVal" class="pill mono"></span></label>
+<input id="rRight" type="range" min="-6" max="6" step="0.25" value="0"/>
 <div class="help">Øyets naturlige brille-styrke før korreksjon</div>
 </div>
 </div>
 
 <div class="two">
 <div>
-<label>Linseverdi Høyre øye (Korreksjon): <span id="lensRightVal" class="pill mono"></span></label>
-<input id="lensRight" type="range" min="-8" max="8" step="0.25" value="0"/>
+<label>Linseverdi Venstre øye (Korreksjon): <span id="lensLeftVal" class="pill mono"></span></label>
+<input id="lensLeft" type="range" min="-8" max="8" step="0.25" value="0"/>
 <div class="help">Hvor mye styrke laseren/linsen korrigerer (beregnes automatisk for nærøye ved Monovision)</div>
 </div>
 
 <div>
-<label>Linseverdi Venstre øye (Korreksjon): <span id="lensLeftVal" class="pill mono"></span></label>
-<input id="lensLeft" type="range" min="-8" max="8" step="0.25" value="0"/>
+<label>Linseverdi Høyre øye (Korreksjon): <span id="lensRightVal" class="pill mono"></span></label>
+<input id="lensRight" type="range" min="-8" max="8" step="0.25" value="0"/>
 <div class="help">Hvor mye styrke laseren/linsen korrigerer (beregnes automatisk for nærøye ved Monovision)</div>
 </div>
 </div>
@@ -155,12 +155,12 @@
 </div>
 <div class="two">
 <div>
-<h3>🟢 Høyre øye</h3>
-<canvas id="canvasRight"></canvas>
+<h3>� Venstre øye</h3>
+<canvas id="canvasLeft"></canvas>
 </div>
 <div>
-<h3>🔴 Venstre øye</h3>
-<canvas id="canvasLeft"></canvas>
+<h3>🟢 Høyre øye</h3>
+<canvas id="canvasRight"></canvas>
 </div>
 </div>
 </div>
@@ -288,6 +288,8 @@ function update(){
       lensRight.disabled = false;
       lensLeft.style.opacity = "0.5";
       lensRight.style.opacity = "1";
+      
+      eyeSummary.textContent = `Venstre: ${fmt(RL)} (nærøye) · Høyre: ${fmt(RR)} (dominant)`;
     }else{
       dominant="Venstre";
       nearEye="Høyre";
@@ -304,9 +306,10 @@ function update(){
       lensLeft.disabled = false;
       lensRight.style.opacity = "0.5";
       lensLeft.style.opacity = "1";
+      
+      eyeSummary.textContent = `Venstre: ${fmt(RL)} (dominant) · Høyre: ${fmt(RR)} (nærøye)`;
     }
 
-    eyeSummary.textContent = `Dominant: ${dominant} (R=${fmt(dominantEye.value==="R"?RR:RL)}) · Nærøye: ${nearEye} (R=${fmt(nearTarget)})`;
     dominantCalc.textContent = `Dominant øye kan justeres fritt. Nærøye beregnes automatisk til ${fmt(nearTarget)}.`;
   }else{
     // Ingen monovision - bruk normal beregning og aktiver begge slidere
