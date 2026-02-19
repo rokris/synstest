@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Synsmodell – Residual per øye + Monovision/Presbyond</title>
+<style>
+  :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+  body { margin:0; padding:20px; background:#f8f9fa; color:#111; }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: 24px; margin: 0 0 8px; font-weight: 600; color:#1a1a1a; }
+  h2 { font-size: 16px; margin: 20px 0 10px; font-weight: 600; color:#333; }
+  h3 { font-size: 14px; margin: 0 0 8px; font-weight: 600; color:#444; }
+  .intro { font-size: 14px; color:#555; margin: 0 0 20px; line-height: 1.6; background:#fff; padding:16px; border-radius:12px; border:1px solid #e0e0e0; }
+  .intro strong { color:#333; }
+  .card { border:1px solid #e0e0e0; border-radius:12px; padding:18px; margin: 14px 0; background:#fff; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .row { display:grid; grid-template-columns: 1fr; gap:16px; }
+  @media (min-width: 980px) { .row { grid-template-columns: 1.15fr 1fr; } }
+  .mono { font-variant-numeric: tabular-nums; }
+  label { font-size:13px; display:block; margin-bottom:8px; color:#333; font-weight: 500; }
+  input[type=range] { width:100%; height:6px; accent-color:#0066cc; }
+  .pill { border:1px solid #d0d0d0; padding:3px 10px; border-radius:999px; font-size:13px; display:inline-block; background:#f5f5f5; font-weight:600; }
+  .note { background:#f0f7ff; border:1px solid #b3d9ff; border-radius:10px; padding:12px; margin:10px 0; }
+  .hint { font-size: 13px; color:#555; line-height: 1.6; }
+  .help { font-size: 12px; color:#777; margin-top:4px; font-style:italic; }
+  table { width:100%; border-collapse:collapse; margin-top:12px; }
+  th, td { padding:10px 8px; border-bottom:1px solid #e8e8e8; font-size:13px; text-align:left; vertical-align: top; }
+  th { font-size:12px; color:#666; font-weight:600; background:#f8f8f8; text-transform:uppercase; letter-spacing:0.3px; }
+  tbody tr:hover { background:#fafafa; }
+  .good { font-weight: 700; }
+  .small { font-size:12px; color:#666; margin-top:3px; line-height:1.3; }
+  canvas { width:100%; height:180px; border:1px solid #e0e0e0; border-radius:10px; background:#fff; }
+  .two { display:grid; grid-template-columns: 1fr; gap:12px; }
+  @media (min-width: 720px) { .two { grid-template-columns: 1fr 1fr; } }
+  .controls { display:grid; gap: 14px; }
+  .toggleRow { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+  .smallInput { width: 170px; padding: 7px 10px; border:1px solid #d0d0d0; border-radius:8px; font-size:13px; }
+  .badge { background:#e8f4f8; border:1px solid #b8dce8; border-radius:10px; padding:10px; font-size:13px; }
+  .section-title { font-size:15px; font-weight:600; color:#444; margin:0 0 12px; padding-bottom:8px; border-bottom:2px solid #e0e0e0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>🔬 Synsmodell: Residual & Akkommodasjon</h1>
+
+<div class="intro">
+  <strong>Hva er dette?</strong> Denne kalkulatoren simulerer hvordan øynene dine ser på ulike avstander etter refraktiv kirurgi (LASIK, PRK, SMILE). 
+  Du kan justere <strong>startverdien</strong> (øyets naturlige brille-styrke), <strong>linseverdien</strong> (korreksjon via kirurgi/linser), 
+  og <strong>akkommodasjon</strong> (øyets evne til å fokusere). Resultatet viser <strong>rest-defokus</strong>: hvor uskarp synet blir på ulike avstander.
+  <br><br>
+  <strong>Monovision/Presbyond:</strong> En teknikk der ett øye korrigeres for avstand (dominant) og det andre for nærarbeid, 
+  nyttig for personer over 40-45 år som mister akkommodasjon (presbyopi).
+</div>
+
+<div class="card">
+<h2 class="section-title">⚙️ Innstillinger</h2>
+<div class="row">
+<div class="controls">
+
+<div class="two">
+<div>
+<label>Startverdi Høyre øye (R0): <span id="rRightVal" class="pill mono"></span></label>
+<input id="rRight" type="range" min="-6" max="6" step="0.25" value="0"/>
+<div class="help">Øyets naturlige brille-styrke før korreksjon (+ = langsynthet, - = nærsynt)</div>
+</div>
+
+<div>
+<label>Startverdi Venstre øye (R0): <span id="rLeftVal" class="pill mono"></span></label>
+<input id="rLeft" type="range" min="-6" max="6" step="0.25" value="0"/>
+<div class="help">Øyets naturlige brille-styrke før korreksjon</div>
+</div>
+</div>
+
+<div class="two">
+<div>
+<label>Linseverdi Høyre øye (Korreksjon): <span id="lensRightVal" class="pill mono"></span></label>
+<input id="lensRight" type="range" min="-8" max="8" step="0.25" value="0"/>
+<div class="help">Hvor mye styrke laseren/linsen korrigerer</div>
+</div>
+
+<div>
+<label>Linseverdi Venstre øye (Korreksjon): <span id="lensLeftVal" class="pill mono"></span></label>
+<input id="lensLeft" type="range" min="-8" max="8" step="0.25" value="0"/>
+<div class="help">Hvor mye styrke laseren/linsen korrigerer</div>
+</div>
+</div>
+
+<div>
+<label>Akkommodasjon (A): <span id="accVal" class="pill mono"></span></label>
+<input id="accommodation" type="range" min="0" max="12" step="0.25" value="12"/>
+<div class="help">Øyets evne til å fokusere på nært hold (reduseres med alderen: ~8D ved 30 år, ~1D ved 60 år)</div>
+</div>
+
+<div style="border-top:1px solid #e0e0e0; padding-top:16px; margin-top:8px;">
+<h3 style="font-size:14px; margin:0 0 10px; color:#333;">⚙️ Monovision / Presbyond</h3>
+<div class="toggleRow">
+<label style="display:flex; align-items:center; gap:6px;">
+  <input type="checkbox" id="monoToggle" style="width:auto; height:auto;"/> 
+  <span>Aktiver Monovision / Presbyond</span>
+</label>
+
+<label>Dominant øye:
+<select id="dominantEye" class="smallInput">
+<option value="R" selected>Høyre</option>
+<option value="L">Venstre</option>
+</select>
+</label>
+
+<label>Mål residual for nærøye:
+<input type="number" id="nearResidualTarget" class="smallInput mono" value="-1.25" step="0.25"/>
+</label>
+
+<span id="eyeSummary" class="pill mono"></span>
+</div>
+
+<div class="badge hint mono" id="dominantCalc"></div>
+</div>
+
+</div>
+
+<div>
+<h2 class="section-title">📊 Resultater</h2>
+<div id="summary" class="mono good" style="margin-bottom:8px;"></div>
+
+<table class="mono">
+<thead>
+<tr>
+<th>Øye</th>
+<th>Residual (R)<br><span style="font-weight:normal; font-size:11px;">Etter korreksjon</span></th>
+<th>Avstand</th>
+<th>1/d (Krav)<br><span style="font-weight:normal; font-size:11px;">Dioptrier nødvendig</span></th>
+<th>Rest-defokus<br><span style="font-weight:normal; font-size:11px;">Uskarpheten (0 = skarpt)</span></th>
+</tr>
+</thead>
+<tbody id="resultTable"></tbody>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h2 class="section-title">📈 Visuell fremstilling av rest-defokus</h2>
+<div class="note hint">
+  <strong>Hvordan lese grafen:</strong> X-aksen viser rest-defokus i dioptrier (D). 
+  Verdier nær 0 D betyr skarp visjon. Jo større avstand fra 0, jo mer uskarp blir visningen.
+  <br><br>
+  <strong>Da finnes tre situasjoner:</strong>
+  <br>1️⃣ <strong>Myopi (−):</strong> Fokus foran netthinnen → bildet er uklart på avstand
+  <br>2️⃣ <strong>Hyperopi (+):</strong> Fokus bak netthinnen → bildet er uklart på avstand (uten akkommodasjon)
+  <br>3️⃣ <strong>Plano (0):</strong> Fokus på netthinnen → skarpt på avstand
+</div>
+<div class="two">
+<div>
+<h3>🟢 Høyre øye</h3>
+<canvas id="canvasRight"></canvas>
+</div>
+<div>
+<h3>🔴 Venstre øye</h3>
+<canvas id="canvasLeft"></canvas>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+
+const distances = [
+  { name: "Fjern (∞)", d: Infinity },
+  { name: "Mellom (70 cm)", d: 0.70 },
+  { name: "Nær (40 cm)", d: 0.40 },
+];
+
+const rRight = document.getElementById("rRight");
+const rLeft = document.getElementById("rLeft");
+const lensRight = document.getElementById("lensRight");
+const lensLeft = document.getElementById("lensLeft");
+const acc = document.getElementById("accommodation");
+const monoToggle = document.getElementById("monoToggle");
+const dominantEye = document.getElementById("dominantEye");
+const nearResidualTargetEl = document.getElementById("nearResidualTarget");
+
+const rRightVal = document.getElementById("rRightVal");
+const rLeftVal = document.getElementById("rLeftVal");
+const lensRightVal = document.getElementById("lensRightVal");
+const lensLeftVal = document.getElementById("lensLeftVal");
+const accVal = document.getElementById("accVal");
+
+const summary = document.getElementById("summary");
+const eyeSummary = document.getElementById("eyeSummary");
+const dominantCalc = document.getElementById("dominantCalc");
+const resultTable = document.getElementById("resultTable");
+
+const canvasRight = document.getElementById("canvasRight");
+const canvasLeft = document.getElementById("canvasLeft");
+const ctxRight = canvasRight.getContext("2d");
+const ctxLeft = canvasLeft.getContext("2d");
+const STORAGE_KEY = "synsmodellState.v1";
+
+function saveState(){
+  const state = {
+    rRight: rRight.value,
+    rLeft: rLeft.value,
+    lensRight: lensRight.value,
+    lensLeft: lensLeft.value,
+    accommodation: acc.value,
+    monoToggle: monoToggle.checked,
+    dominantEye: dominantEye.value,
+    nearResidualTarget: nearResidualTargetEl.value
+  };
+
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }catch(_e){
+  }
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+
+    const state = JSON.parse(raw);
+    if(!state || typeof state !== "object") return;
+
+    if(state.rRight !== undefined) rRight.value = state.rRight;
+    if(state.rLeft !== undefined) rLeft.value = state.rLeft;
+    if(state.lensRight !== undefined) lensRight.value = state.lensRight;
+    if(state.lensLeft !== undefined) lensLeft.value = state.lensLeft;
+    if(state.accommodation !== undefined) acc.value = state.accommodation;
+    monoToggle.checked = Boolean(state.monoToggle);
+    if(state.dominantEye === "R" || state.dominantEye === "L") dominantEye.value = state.dominantEye;
+    if(state.nearResidualTarget !== undefined) nearResidualTargetEl.value = state.nearResidualTarget;
+  }catch(_e){
+  }
+}
+
+function fmt(x){return (x>0?"+":"")+x.toFixed(2)+" D";}
+function demand(d){return d===Infinity?0:1/d;}
+
+function optimalLens(R0,d,A){
+  const B = R0 + demand(d);
+  const cov = B>0 ? Math.min(B,A) : 0;
+  return B - cov;
+}
+
+function restDefocus(R,d,A){
+  const B = R + demand(d);
+  const cov = B>0 ? Math.min(B,A) : 0;
+  return B - cov;
+}
+
+function update(){
+
+  const RR0 = parseFloat(rRight.value);
+  const RL0 = parseFloat(rLeft.value);
+  const lensR = parseFloat(lensRight.value);
+  const lensL = parseFloat(lensLeft.value);
+  const A = parseFloat(acc.value);
+
+  rRightVal.textContent = fmt(RR0);
+  rLeftVal.textContent = fmt(RL0);
+  lensRightVal.textContent = fmt(lensR);
+  lensLeftVal.textContent = fmt(lensL);
+  accVal.textContent = fmt(A);
+
+  let RR = RR0 - lensR;
+  let RL = RL0 - lensL;
+
+  let dominant = "Høyre";
+  let nearEye = "Venstre";
+
+  if(monoToggle.checked){
+    const nearTarget = parseFloat(nearResidualTargetEl.value);
+
+    if(dominantEye.value==="R"){
+      dominant="Høyre";
+      nearEye="Venstre";
+      // RR beholder slider-verdien (RR0 - lensR)
+      RL = nearTarget;  // Nærøye låses til mål
+    }else{
+      dominant="Venstre";
+      nearEye="Høyre";
+      // RL beholder slider-verdien (RL0 - lensL)
+      RR = nearTarget;  // Nærøye låses til mål
+    }
+
+    eyeSummary.textContent = `Dominant: ${dominant} (R=${fmt(dominantEye.value==="R"?RR:RL)}) · Nærøye: ${nearEye} (R=${fmt(nearTarget)})`;
+    dominantCalc.textContent = `Dominant øye kan justeres fritt. Nærøye låst til ${fmt(nearTarget)}.`;
+  }else{
+    eyeSummary.textContent = `Ingen monovision`;
+    dominantCalc.textContent = "";
+  }
+
+  summary.textContent = "";
+
+  resultTable.innerHTML="";
+
+  const graphData = {
+    right: [],
+    left: []
+  };
+
+  const eyes = [
+    {label:"Høyre", R0:RR0, R:RR},
+    {label:"Venstre", R0:RL0, R:RL}
+  ];
+
+  for(const e of eyes){
+
+    const P = e.R0 - e.R;
+
+    for(const dist of distances){
+
+      let lensShown;
+      let rest;
+
+      const isDominant = monoToggle.checked && e.label===dominant;
+
+      if(monoToggle.checked){
+        if(isDominant){
+          lensShown = optimalLens(e.R0,dist.d,A);
+          rest = restDefocus(e.R,dist.d,A); // Dominant bruker faktisk R-verdi
+        }else{
+          lensShown = P;
+          rest = restDefocus(e.R,dist.d,A);
+        }
+      }else{
+        lensShown = optimalLens(e.R0,dist.d,A);
+        rest = restDefocus(e.R,dist.d,A);
+      }
+
+      // Lagre rest-defokus for grafen
+      if(e.label==="Høyre"){
+        graphData.right.push({dist: dist.name, value: rest});
+      }else{
+        graphData.left.push({dist: dist.name, value: rest});
+      }
+
+      const tr=document.createElement("tr");
+      const residualShown = dist.d===Infinity ? fmt(e.R) : "";
+      tr.innerHTML=`
+        <td><strong>${e.label}</strong></td>
+        <td>${residualShown}</td>
+        <td>${dist.name}</td>
+        <td>${fmt(demand(dist.d))}</td>
+        <td>
+          <strong style="font-size:15px; color:${Math.abs(rest)<0.5?'#0a7':'#c22'};">${fmt(rest)}</strong>
+        </td>
+      `;
+      resultTable.appendChild(tr);
+    }
+  }
+
+  drawGraph(graphData);
+  saveState();
+}
+
+function drawGraph(data){
+  drawSingleEyeGraph(canvasRight, ctxRight, data.right, "#0a7", "Høyre");
+  drawSingleEyeGraph(canvasLeft, ctxLeft, data.left, "#c22", "Venstre");
+}
+
+function drawSingleEyeGraph(canvas, ctx, dataPoints, color, eyeLabel){
+
+  const minX=-6, maxX=6;
+  const W=canvas.clientWidth;
+  const H=canvas.clientHeight;
+
+  canvas.width=W;
+  canvas.height=H;
+
+  ctx.clearRect(0,0,W,H);
+
+  const margin={top:20, right:30, bottom:50, left:90};
+  const plotW = W - margin.left - margin.right;
+  const plotH = H - margin.top - margin.bottom;
+
+  // X-akse mapping (rest-defokus verdi)
+  function xToPx(val){
+    return margin.left + ((val-minX)/(maxX-minX))*plotW;
+  }
+
+  // Y-posisjon for hver avstand
+  const yPositions = {
+    "Fjern (∞)": margin.top + plotH*0.2,
+    "Mellom (70 cm)": margin.top + plotH*0.5,
+    "Nær (40 cm)": margin.top + plotH*0.8
+  };
+
+  // Tegn bakgrunn og akser
+  ctx.strokeStyle="#ddd";
+  ctx.lineWidth=1;
+  
+  // Vertikal null-linje
+  const zeroX = xToPx(0);
+  ctx.strokeStyle="#999";
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.moveTo(zeroX, margin.top);
+  ctx.lineTo(zeroX, H-margin.bottom);
+  ctx.stroke();
+
+  // Område-etiketter langs X-aksen
+  ctx.font="12px system-ui";
+  ctx.textAlign="center";
+  ctx.fillStyle="#555";
+  ctx.fillText("Myopi (−)", xToPx(-3), margin.top - 4);
+  ctx.fillText("Plano (0)", xToPx(0), margin.top - 4);
+  ctx.fillText("Hyperopi (+)", xToPx(3), margin.top - 4);
+
+  // X-akse skala
+  ctx.fillStyle="#666";
+  ctx.font="11px system-ui";
+  ctx.textAlign="center";
+  ctx.lineWidth=1;
+  for(let i=minX; i<=maxX; i+=2){
+    const x = xToPx(i);
+    ctx.fillText((i>0?"+":"")+i+" D", x, H-margin.bottom+20);
+    ctx.strokeStyle="#f0f0f0";
+    ctx.beginPath();
+    ctx.moveTo(x, margin.top);
+    ctx.lineTo(x, H-margin.bottom);
+    ctx.stroke();
+  }
+
+  // Y-akse labels
+  ctx.textAlign="right";
+  ctx.fillStyle="#444";
+  ctx.font="12px system-ui";
+  Object.entries(yPositions).forEach(([label, y])=>{
+    ctx.fillText(label, margin.left-10, y+4);
+  });
+
+  // Tegn linje for øyet
+  if(dataPoints.length >= 2){
+    ctx.strokeStyle=color;
+    ctx.lineWidth=3;
+    ctx.beginPath();
+    
+    dataPoints.forEach((pt, idx)=>{
+      const x = xToPx(pt.value);
+      const y = yPositions[pt.dist];
+      if(idx===0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Tegn punkter
+    ctx.fillStyle=color;
+    dataPoints.forEach(pt=>{
+      const x = xToPx(pt.value);
+      const y = yPositions[pt.dist];
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI*2);
+      ctx.fill();
+    });
+  }
+}
+
+[rRight,rLeft,lensRight,lensLeft,acc,monoToggle,dominantEye,nearResidualTargetEl].forEach(el=>{
+  el.addEventListener("input",update);
+  el.addEventListener("change",update);
+});
+
+loadState();
+update();
+
+</script>
+</body>
+</html>
