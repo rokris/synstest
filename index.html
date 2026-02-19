@@ -144,6 +144,10 @@
   <strong>Hvordan lese grafen:</strong> X-aksen viser rest-defokus i dioptrier (D). 
   Verdier nær 0 D betyr skarp visjon. Jo større avstand fra 0, jo mer uskarp blir visningen.
   <br><br>
+  <strong>🔵 Lysblått område = DOF (Depth of Field):</strong> Det skraverte lysblå området viser fokusområdet hvor synet er akseptabelt skarpt.
+  <br>• <strong>Uten Monovision/Presbyond:</strong> ±0.50 D (standard fokusområde)
+  <br>• <strong>Med Monovision/Presbyond:</strong> ±1.25 D (utvidet fokusområde)
+  <br><br>
   <strong>Da finnes tre situasjoner:</strong>
   <br>1️⃣ <strong>Myopi (−):</strong> Fokus foran netthinnen → bildet er uklart på avstand
   <br>2️⃣ <strong>Hyperopi (+):</strong> Fokus bak netthinnen → bildet er uklart på avstand (uten akkommodasjon)
@@ -352,16 +356,16 @@ function update(){
     }
   }
 
-  drawGraph(graphData);
+  drawGraph(graphData, monoToggle.checked);
   saveState();
 }
 
-function drawGraph(data){
-  drawSingleEyeGraph(canvasRight, ctxRight, data.right, "#0a7", "Høyre");
-  drawSingleEyeGraph(canvasLeft, ctxLeft, data.left, "#c22", "Venstre");
+function drawGraph(data, isMonovision){
+  drawSingleEyeGraph(canvasRight, ctxRight, data.right, "#0a7", "Høyre", isMonovision);
+  drawSingleEyeGraph(canvasLeft, ctxLeft, data.left, "#c22", "Venstre", isMonovision);
 }
 
-function drawSingleEyeGraph(canvas, ctx, dataPoints, color, eyeLabel){
+function drawSingleEyeGraph(canvas, ctx, dataPoints, color, eyeLabel, isMonovision){
 
   const minX=-6, maxX=6;
   const W=canvas.clientWidth;
@@ -387,6 +391,27 @@ function drawSingleEyeGraph(canvas, ctx, dataPoints, color, eyeLabel){
     "Mellom (70 cm)": margin.top + plotH*0.5,
     "Nær (40 cm)": margin.top + plotH*0.8
   };
+
+  // Tegn DOF-område (Depth of Field)
+  const dofRange = isMonovision ? 1.25 : 0.50;  // ±1.25 D med Presbyond, ±0.50 D uten
+  ctx.fillStyle = "rgba(173, 216, 230, 0.25)";  // Lysblå med 25% opacity
+  const dofLeft = xToPx(-dofRange);
+  const dofRight = xToPx(dofRange);
+  ctx.fillRect(dofLeft, margin.top, dofRight - dofLeft, plotH);
+  
+  // Tegn DOF-grenser (stiplede linjer)
+  ctx.strokeStyle = "rgba(100, 149, 237, 0.4)";
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(dofLeft, margin.top);
+  ctx.lineTo(dofLeft, margin.top + plotH);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(dofRight, margin.top);
+  ctx.lineTo(dofRight, margin.top + plotH);
+  ctx.stroke();
+  ctx.setLineDash([]);  // Tilbakestill til solid linje
 
   // Tegn bakgrunn og akser
   ctx.strokeStyle="#ddd";
