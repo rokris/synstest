@@ -102,7 +102,16 @@ struct ContentView: View {
                 }
                 Slider(value: $vm.accommodation, in: 0...12, step: 0.25)
 
-                Text("Øyets evne til å fokusere på nært hold (reduseres med alderen: ~8 D ved 30 år, ~1 D ved 60 år)")
+                // Estimated average age (Hofstetter's formula: A = 18.5 - 0.3 × age)
+                HStack(spacing: 4) {
+                    Image(systemName: "person.fill")
+                        .font(.caption2)
+                    Text("Gjennomsnittsalder: ~\(estimatedAge) år")
+                        .font(.caption.weight(.medium))
+                }
+                .foregroundStyle(.blue)
+
+                Text("Øyets evne til å fokusere på nært hold (reduseres med alderen). Basert på Hofstetters gjennomsnitt.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -113,6 +122,13 @@ struct ContentView: View {
                     .stroke(.quaternary, lineWidth: 1)
             )
         }
+    }
+
+    /// Estimated average age for the current accommodation value.
+    /// Uses Hofstetter's average formula: A = 18.5 − 0.3 × age → age = (18.5 − A) / 0.3
+    private var estimatedAge: Int {
+        let age = (18.5 - vm.accommodation) / 0.3
+        return max(10, min(70, Int(age.rounded())))
     }
 }
 
