@@ -30,7 +30,7 @@ struct EyeCardView: View {
                         .padding(.vertical, 3)
                         .background(.fill.tertiary, in: Capsule())
                 }
-                Slider(value: $r0, in: -6...6, step: 0.25)
+                Slider(value: $r0, in: -8...8, step: 0.25)
 
                 Text("Øyets naturlige brillestyrke før korreksjon")
                     .font(.caption)
@@ -68,10 +68,15 @@ struct EyeCardView: View {
             }
         }
         .padding()
-        .background(.background, in: RoundedRectangle(cornerRadius: 12))
+        .background(tintColor.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
         .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(.quaternary, lineWidth: 1)
+                .strokeBorder(tintColor.opacity(0.2), lineWidth: 1)
         )
+        .overlay(alignment: .leading) {
+            RoundedRectangle(cornerRadius: 12)
+                .frame(width: 3)
+                .foregroundStyle(tintColor)
+        }
     }
 }
