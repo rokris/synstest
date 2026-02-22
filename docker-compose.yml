@@ -1,9 +1,9 @@
 services:
-  synstest-app:
+  optisim:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: synstest-app
+    container_name: optisim
     ports:
       - "8080:80"
     restart: unless-stopped
