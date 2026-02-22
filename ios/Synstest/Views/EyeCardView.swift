@@ -1,5 +1,63 @@
 import SwiftUI
 
+private struct SliderTickMarks: View {
+    private let ticks: [Int] = [-8, -6, -4, -2, 0, 2, 4, 6, 8]
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // Horizontal rule with vertical tick lines
+            GeometryReader { geo in
+                // Match the slider's internal thumb inset
+                let inset: CGFloat = 11
+                let usable = geo.size.width - inset * 2
+                // Total steps from -8 to +8 in steps of 0.5 = 32
+                let totalSteps = 32
+                let bottomY: CGFloat = geo.size.height
+
+                Path { path in
+                    // Horizontal line
+                    path.move(to: CGPoint(x: inset, y: bottomY))
+                    path.addLine(to: CGPoint(x: inset + usable, y: bottomY))
+
+                    // Vertical ticks for every 0.5 from -8 to +8
+                    for i in 0...totalSteps {
+                        let value = -8.0 + Double(i) * 0.5
+                        let x = inset + usable * CGFloat(i) / CGFloat(totalSteps)
+                        let tickHeight: CGFloat
+                        if value.truncatingRemainder(dividingBy: 2) == 0 {
+                            // Labeled ticks (even integers): tallest
+                            tickHeight = 10
+                        } else if value.truncatingRemainder(dividingBy: 1) == 0 {
+                            // Odd integers: medium
+                            tickHeight = 6
+                        } else {
+                            // Half steps (0.5): shortest
+                            tickHeight = 3
+                        }
+                        path.move(to: CGPoint(x: x, y: bottomY))
+                        path.addLine(to: CGPoint(x: x, y: bottomY - tickHeight))
+                    }
+                }
+                .stroke(Color.secondary.opacity(0.5), lineWidth: 0.5)
+            }
+            .frame(height: 11)
+
+            // Labels
+            HStack {
+                ForEach(ticks, id: \.self) { value in
+                    Text(value > 0 ? "+\(value)" : "\(value)")
+                        .font(.system(size: 9, weight: value == 0 ? .semibold : .regular).monospacedDigit())
+                        .foregroundStyle(value == 0 ? .primary : .secondary)
+                    if value != ticks.last {
+                        Spacer()
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 7)
+    }
+}
+
 struct EyeCardView: View {
     let title: String
     let icon: String
@@ -31,6 +89,7 @@ struct EyeCardView: View {
                         .background(.fill.tertiary, in: Capsule())
                 }
                 Slider(value: $r0, in: -8...8, step: 0.25)
+                SliderTickMarks()
 
                 Text("Øyets naturlige brillestyrke før korreksjon")
                     .font(.caption)
@@ -54,12 +113,14 @@ struct EyeCardView: View {
                     Slider(value: .constant(effectiveLens), in: -8...8, step: 0.25)
                         .disabled(true)
                         .tint(.secondary)
+                    SliderTickMarks()
 
                     Text("Beregnes automatisk for nærøye ved Monovision")
                         .font(.caption)
                         .foregroundStyle(.orange)
                 } else {
                     Slider(value: $lens, in: -8...8, step: 0.25)
+                    SliderTickMarks()
 
                     Text("Hvor mye styrke laseren/linsen korrigerer")
                         .font(.caption)

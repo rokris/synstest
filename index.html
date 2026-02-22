@@ -24,7 +24,13 @@
   @media (min-width: 980px) { .row { grid-template-columns: 1.15fr 1fr; } }
   .mono { font-variant-numeric: tabular-nums; }
   label { font-size:13px; display:block; margin-bottom:8px; color:#333; font-weight: 500; }
-  input[type=range] { width:100%; height:6px; accent-color:#0066cc; }
+  input[type=range] { width:100%; height:6px; accent-color:#0066cc; margin-bottom:0; }
+  .slider-ticks { position:relative; width:100%; height:22px; margin-top:-2px; padding:0 6px 0 9px; box-sizing:border-box; }
+  .slider-ticks .tick-line { width:100%; height:12px; }
+  .slider-ticks .tick-line svg { width:100%; height:100%; overflow:visible; }
+  .slider-ticks .tick-labels { display:flex; justify-content:space-between; margin-top:2px; margin-left:-2.5px; margin-right:3px; }
+  .slider-ticks .tick-labels span { font-size:9px; color:#999; font-variant-numeric:tabular-nums; text-align:center; width:0; overflow:visible; white-space:nowrap; }
+  .slider-ticks .tick-labels span.zero { color:#333; font-weight:600; }
   .pill { border:1px solid #d0d0d0; padding:3px 10px; border-radius:999px; font-size:13px; display:inline-block; background:#f5f5f5; font-weight:600; }
   .note { background:#f0f7ff; border:1px solid #b3d9ff; border-radius:10px; padding:12px; margin:10px 0; }
   .hint { font-size: 13px; color:#555; line-height: 1.6; }
@@ -81,11 +87,13 @@
 <div>
 <label>Startverdi (R0): <span id="rRightVal" class="pill mono"></span></label>
 <input id="rRight" type="range" min="-8" max="8" step="0.25" value="0"/>
+<div class="slider-ticks" data-min="-8" data-max="8"></div>
 <div class="help">Øyets naturlige brille-styrke (+ = langsynthet, − = nærsynt)</div>
 </div>
 <div>
 <label>Linseverdi (Korreksjon): <span id="lensRightVal" class="pill mono"></span></label>
 <input id="lensRight" type="range" min="-8" max="8" step="0.25" value="0"/>
+<div class="slider-ticks" data-min="-8" data-max="8"></div>
 <div class="help">Korreksjon via kirurgi/linser</div>
 </div>
 </div>
@@ -97,11 +105,13 @@
 <div>
 <label>Startverdi (R0): <span id="rLeftVal" class="pill mono"></span></label>
 <input id="rLeft" type="range" min="-8" max="8" step="0.25" value="0"/>
+<div class="slider-ticks" data-min="-8" data-max="8"></div>
 <div class="help">Øyets naturlige brille-styrke (+ = langsynthet, − = nærsynt)</div>
 </div>
 <div>
 <label>Linseverdi (Korreksjon): <span id="lensLeftVal" class="pill mono"></span></label>
 <input id="lensLeft" type="range" min="-8" max="8" step="0.25" value="0"/>
+<div class="slider-ticks" data-min="-8" data-max="8"></div>
 <div class="help">Korreksjon via kirurgi/linser</div>
 </div>
 </div>
@@ -191,6 +201,59 @@
 </div>
 
 <script>
+
+// Generate slider tick marks
+document.querySelectorAll('.slider-ticks').forEach(el => {
+  const min = parseFloat(el.dataset.min);
+  const max = parseFloat(el.dataset.max);
+  const range = max - min;
+  const totalSteps = range / 0.5; // steps of 0.5
+  const insetPct = 0; // no SVG inset — padding on container handles alignment
+
+  // SVG tick lines
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('viewBox', '0 0 100 12');
+  svg.setAttribute('preserveAspectRatio', 'none');
+  const usable = 100;
+
+  // Horizontal line
+  const hLine = document.createElementNS(svgNS, 'line');
+  hLine.setAttribute('x1', 0); hLine.setAttribute('y1', 0);
+  hLine.setAttribute('x2', 100); hLine.setAttribute('y2', 0);
+  hLine.setAttribute('stroke', '#aaa'); hLine.setAttribute('stroke-width', '0.15');
+  svg.appendChild(hLine);
+
+  for (let i = 0; i <= totalSteps; i++) {
+    const value = min + i * 0.5;
+    const x = usable * (i / totalSteps);
+    let h;
+    if (value % 2 === 0) h = 10;       // labeled (even): tallest
+    else if (value % 1 === 0) h = 6;    // odd integers: medium
+    else h = 3;                          // half steps: shortest
+    const tick = document.createElementNS(svgNS, 'line');
+    tick.setAttribute('x1', x); tick.setAttribute('y1', 0);
+    tick.setAttribute('x2', x); tick.setAttribute('y2', h);
+    tick.setAttribute('stroke', '#aaa'); tick.setAttribute('stroke-width', '0.15');
+    svg.appendChild(tick);
+  }
+
+  const tickDiv = document.createElement('div');
+  tickDiv.className = 'tick-line';
+  tickDiv.appendChild(svg);
+  el.appendChild(tickDiv);
+
+  // Labels for even integers only
+  const labelsDiv = document.createElement('div');
+  labelsDiv.className = 'tick-labels';
+  for (let v = min; v <= max; v += 2) {
+    const span = document.createElement('span');
+    span.textContent = v > 0 ? '+' + v : '' + v;
+    if (v === 0) span.className = 'zero';
+    labelsDiv.appendChild(span);
+  }
+  el.appendChild(labelsDiv);
+});
 
 const distances = [
   { name: "Fjern (∞)", d: Infinity },
