@@ -3,7 +3,7 @@
 En interaktiv kalkulator for å simulere syn etter refraktiv kirurgi (LASIK, PRK, SMILE). Tilgjengelig som webapplikasjon (Docker) og native iOS-app.
 
 ## Funksjoner
-- Juster startverdi (R0), linsekorreksjon og akkommodasjon per øye
+- Juster brillestyrke (R0), linsekorreksjon og akkommodasjon per øye
 - Monovision/Presbyond-modus med automatisk beregning av nærøye
 - Resultattabell med fargekoding (grønn < 0.5 D, rød ≥ 0.5 D)
 - Visuell graf med rest-defokus og DOF-sone
@@ -107,7 +107,7 @@ For å kjøre appen på en fysisk iPhone direkte fra Xcode (sideloading):
    - Velg prosjektet i navigatoren → **Signing & Capabilities**
    - Huk av **Automatically manage signing**
    - Velg ditt **Team** (din Apple ID)
-   - Endre **Bundle Identifier** til noe unikt, f.eks. `com.dittnavn.synsanalyse`
+   - Endre **Bundle Identifier** til noe unikt, f.eks. `com.dittnavn.optisim`
 4. **Stol på utvikler**: Første gang du installerer, gå til **Innstillinger → Generelt → VPN og enhetsadministrasjon** på iPhonen og godkjenn utviklersertifikatet.
 5. **Bygg og kjør**: Velg din iPhone som destinasjon i Xcode og trykk ▶️ (Run).
 
@@ -126,7 +126,7 @@ For å publisere appen på App Store:
 #### Steg for steg
 
 1. **Konfigurer prosjektet**:
-   - Sett riktig **Bundle Identifier** (f.eks. `com.firmanavn.synsanalyse`)
+   - Sett riktig **Bundle Identifier** (f.eks. `com.firmanavn.optisim`)
    - Sett **Version** og **Build** nummer
    - Velg ditt Developer Program-team under **Signing & Capabilities**
    - Sett **Deployment Target** til ønsket minimum iOS-versjon
