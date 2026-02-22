@@ -41,7 +41,7 @@ struct ContentView: View {
             Text("Hva er dette?")
                 .font(.subheadline.weight(.semibold))
 
-            Text("Denne kalkulatoren simulerer hvordan øynene dine ser på ulike avstander etter refraktiv kirurgi (LASIK, PRK, SMILE). Juster startverdien, linseverdien og akkommodasjon for å se rest-defokus.")
+            Text("Denne kalkulatoren simulerer hvordan øynene dine ser på ulike avstander etter refraktiv kirurgi (LASIK, PRK, SMILE). Du kan justere brillestyrken (øyets naturlige brillestyrke), linseverdien (korreksjon via kirurgi/linser) og akkommodasjon (øyets evne til å fokusere). Resultatet viser rest-defokus: hvor uskarp synet blir på ulike avstander.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 

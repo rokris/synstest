@@ -91,7 +91,7 @@ struct EyeCardView: View {
                 Slider(value: $r0, in: -8...8, step: 0.25)
                 SliderTickMarks()
 
-                Text("Øyets naturlige brillestyrke før korreksjon")
+                Text("Øyets naturlige brillestyrke (+ = langsynthet, − = nærsynt)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -122,7 +122,7 @@ struct EyeCardView: View {
                     Slider(value: $lens, in: -8...8, step: 0.25)
                     SliderTickMarks()
 
-                    Text("Hvor mye styrke laseren/linsen korrigerer")
+                    Text("Korreksjon via kirurgi/linser")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
