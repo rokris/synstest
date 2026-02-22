@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Synsanalyse – Rest-defokus & Monovision/Presbyond</title>
+<title>OptiSim – Rest-defokus & Monovision/Presbyond</title>
 <style>
   :root {
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -64,11 +64,11 @@
 <body>
 <div class="wrap">
 
-<h1>👁️ Synsanalyse</h1>
+<h1>👁️ OptiSim</h1>
 
 <div class="intro">
   <strong>Hva er dette?</strong> Denne kalkulatoren simulerer hvordan øynene dine ser på ulike avstander etter refraktiv kirurgi (LASIK, PRK, SMILE).
-  Du kan justere <strong>startverdien</strong> (øyets naturlige brille-styrke), <strong>linseverdien</strong> (korreksjon via kirurgi/linser),
+  Du kan justere <strong>brillestyrken</strong> (øyets naturlige brillestyrke), <strong>linseverdien</strong> (korreksjon via kirurgi/linser),
   og <strong>akkommodasjon</strong> (øyets evne til å fokusere). Resultatet viser <strong>rest-defokus</strong>: hvor uskarp synet blir på ulike avstander.
   <br><br>
   <strong>Monovision/Presbyond:</strong> En teknikk der ett øye korrigeres for avstand (dominant) og det andre for nærarbeid,
@@ -85,7 +85,7 @@
 <h3 class="chart-title right">👁️ Høyre øye</h3>
 <div class="eye-fields">
 <div>
-<label>Startverdi (R0): <span id="rRightVal" class="pill mono"></span></label>
+<label>Brillestyrke (R0): <span id="rRightVal" class="pill mono"></span></label>
 <input id="rRight" type="range" min="-8" max="8" step="0.25" value="0"/>
 <div class="slider-ticks" data-min="-8" data-max="8"></div>
 <div class="help">Øyets naturlige brille-styrke (+ = langsynthet, − = nærsynt)</div>
@@ -103,7 +103,7 @@
 <h3 class="chart-title left">👁️ Venstre øye</h3>
 <div class="eye-fields">
 <div>
-<label>Startverdi (R0): <span id="rLeftVal" class="pill mono"></span></label>
+<label>Brillestyrke (R0): <span id="rLeftVal" class="pill mono"></span></label>
 <input id="rLeft" type="range" min="-8" max="8" step="0.25" value="0"/>
 <div class="slider-ticks" data-min="-8" data-max="8"></div>
 <div class="help">Øyets naturlige brille-styrke (+ = langsynthet, − = nærsynt)</div>

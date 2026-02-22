@@ -79,7 +79,7 @@ struct EyeCardView: View {
             // R0 slider
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
-                    Text("Startverdi (R0)")
+                    Text("Brillestyrke (R0)")
                         .font(.subheadline.weight(.medium))
                     Spacer()
                     Text(r0.diopterString)

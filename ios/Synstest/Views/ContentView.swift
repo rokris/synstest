@@ -28,7 +28,7 @@ struct ContentView: View {
                 .padding()
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle("Synsanalyse")
+            .navigationTitle("OptiSim")
             .navigationBarTitleDisplayMode(.large)
         }
         .environment(vm)

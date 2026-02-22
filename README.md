@@ -1,4 +1,4 @@
-# Synsanalyse
+# OptiSim
 
 En interaktiv kalkulator for å simulere syn etter refraktiv kirurgi (LASIK, PRK, SMILE). Tilgjengelig som webapplikasjon (Docker) og native iOS-app.
 
