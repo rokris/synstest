@@ -1,1 +1,24 @@
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+.env.local
+
+# Docker
+*.log
+
+# Editors
+.vscode/
+*.swp
+*~
+
+# iOS (handled in ios/.gitignore, but just in case)
+ios/DerivedData/
+ios/build/
